@@ -1,0 +1,40 @@
+{
+  "name": "base-register",
+  "description": "Add support for registering a glob of generators to your base app.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/node-base/base-register",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "node-base/base-register",
+  "bugs": {
+    "url": "https://github.com/node-base/base-register/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "gulp-format-md": "*",
+    "mocha": "^2.4.5"
+  },
+  "keywords": [],
+  "verb": {
+    "layout": "default",
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "related": {
+      "list": []
+    },
+    "reflinks": [
+      "verb"
+    ]
+  }
+}
