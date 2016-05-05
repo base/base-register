@@ -2,27 +2,55 @@
 
 require('mocha');
 var assert = require('assert');
-var baseRegister2 = require('');
+var register = require('./');
+var generators = require('base-generators');
+var Base = require('base');
+var app;
 
-describe('base-register2', function() {
-  it('should export a function', function() {
-    assert.equal(typeof baseRegister2, 'function');
+describe('base-register', function() {
+  beforeEach(function() {
+    app = new Base();
+    app.isApp = true;
+    app.use(generators());
+    app.use(register());
   });
 
-  it('should export an object', function() {
-    assert(baseRegister2);
-    assert.equal(typeof baseRegister2, 'object');
+  describe('plugin', function() {
+    it('should export a function', function() {
+      assert.equal(typeof register, 'function');
+    });
+
+    it('should expose a .register method', function() {
+      assert.equal(typeof app.register, 'function');
+    });
   });
 
-  it('should throw an error when invalid args are passed', function(cb) {
-    try {
-      baseRegister2();
-      cb(new Error('expected an error'));
-    } catch (err) {
-      assert(err);
-      assert.equal(err.message, 'expected first argument to be a string');
-      assert.equal(err.message, 'expected callback to be a function');
-      cb();
-    }
+  describe('.register', function() {
+    it('should register a generator by filepath', function() {
+      app.register(__dirname + '/fixtures/a/index.js');
+      assert(app.generators.hasOwnProperty('a'));
+    });
+
+    it('should register a generator by directory', function() {
+      app.register(__dirname + '/fixtures/a/');
+      assert(app.generators.hasOwnProperty('a'));
+    });
+
+    it('should register a glob of generators', function() {
+      app.register(__dirname + '/fixtures/*/');
+      assert(app.generators.hasOwnProperty('a'));
+      assert(app.generators.hasOwnProperty('b'));
+      assert(app.generators.hasOwnProperty('c'));
+    });
+
+    it('should support a custom rename function', function() {
+      app.register(__dirname + '/fixtures/*/index.js', function(name, filepath) {
+        return 'foo-' + name;
+      });
+
+      assert(app.generators.hasOwnProperty('foo-a'));
+      assert(app.generators.hasOwnProperty('foo-b'));
+      assert(app.generators.hasOwnProperty('foo-c'));
+    });
   });
 });

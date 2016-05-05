@@ -14,27 +14,54 @@
   ],
   "main": "index.js",
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4.0"
   },
   "scripts": {
     "test": "mocha"
   },
-  "dependencies": {},
+  "dependencies": {
+    "debug": "^2.2.0",
+    "extend-shallow": "^2.0.1",
+    "is-glob": "^2.0.1",
+    "matched": "^0.4.1"
+  },
   "devDependencies": {
-    "gulp-format-md": "*",
+    "base": "^0.8.1",
+    "base-generators": "^0.2.11",
+    "gulp-format-md": "^0.1.9",
     "mocha": "^2.4.5"
   },
-  "keywords": [],
+  "keywords": [
+    "base",
+    "baseplugin",
+    "generate",
+    "generators",
+    "glob",
+    "register"
+  ],
   "verb": {
-    "layout": "default",
     "plugins": [
       "gulp-format-md"
     ],
-    "related": {
-      "list": []
-    },
     "reflinks": [
-      "verb"
-    ]
+      "base-generators",
+      "verb",
+      "matched"
+    ],
+    "related": {
+      "list": [
+        "base",
+        "base-generators",
+        "generate"
+      ]
+    },
+    "layout": "default",
+    "toc": false,
+    "tasks": [
+      "readme"
+    ],
+    "lint": {
+      "reflinks": true
+    }
   }
 }
