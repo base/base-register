@@ -9,14 +9,11 @@
 
 var path = require('path');
 var debug = require('debug')('base:register');
-var extend = require('extend-shallow');
-var isGlob = require('is-glob');
-var glob = require('matched');
+var utils = require('./utils');
 
 module.exports = function(config) {
   return function plugin(app) {
-    if (!this || !this.isApp || this.isRegistered('base-register')) return;
-    debug('initializing <%s>, from <%s>', __filename, module.parent.id);
+    if (!utils.isValid(app, 'base-register')) return;
 
     var register = this.register;
     var generatorCache = {};
@@ -34,51 +31,45 @@ module.exports = function(config) {
      * @api public
      */
 
-    this.define('register', function(patterns, options, fn) {
+    this.define('register', function(patterns, options) {
       debug('registering', patterns);
 
-      if (typeof options === 'function') {
-        fn = options;
-        options = {};
+      var defaults = {cwd: this.cwd, rename: utils.rename};
+      var opts = utils.extend({}, defaults, config, options);
+      var files;
+
+      if (!Array.isArray(patterns)) {
+        patterns = [patterns];
       }
 
-      if (isGlob(patterns) || Array.isArray(patterns)) {
-        var opts = extend({cwd: this.cwd}, config, options);
+      if (utils.hasGlob(patterns)) {
+        files = utils.glob.sync(patterns, opts);
+      } else {
+        files = patterns;
+      }
 
-        var files = glob.sync(patterns, opts);
-        for (var i = 0; i < files.length; i++) {
-          var filename = files[i];
-          var filepath = path.resolve(opts.cwd, filename);
-          var resolved = tryResolve(filepath);
+      for (var i = 0; i < files.length; i++) {
+        var filename = files[i];
+        var filepath = path.resolve(opts.cwd, filename);
+        var resolved = utils.tryResolve(filepath);
+        if (!resolved) continue;
 
-          if (typeof resolved === 'string') {
-
-            var dir = path.dirname(resolved);
-            if (generatorCache.hasOwnProperty(dir)) {
-              continue;
-            }
-
-            generatorCache[dir] = resolved;
-
-          }
-
-          var basename = path.basename(dir);
-          var name = fn ? fn(basename, resolved) : basename;
-          register.call(this, name, resolved);
+        var file = new utils.File({path: resolved, cwd: opts.cwd});
+        if (generatorCache.hasOwnProperty(file.dirname)) {
+          continue;
         }
 
-        this.union('cache.files', files);
-        return this;
+        generatorCache[file.dirname] = resolved;
+        file.name = path.basename(file.dirname);
+        file.name = opts.rename(file);
+
+        register.call(this, file.name, resolved);
       }
-      return register.apply(this, arguments);
+
+      this.union('cache.files', files);
+      return this;
     });
 
     return plugin;
   };
 };
-
-function tryResolve(fp) {
-  try {
-    return require.resolve(fp);
-  } catch (err) {}
-}

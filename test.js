@@ -9,8 +9,7 @@ var app;
 
 describe('base-register', function() {
   beforeEach(function() {
-    app = new Base();
-    app.isApp = true;
+    app = new Base({isApp: true});
     app.use(generators());
     app.use(register());
   });
@@ -44,8 +43,10 @@ describe('base-register', function() {
     });
 
     it('should support a custom rename function', function() {
-      app.register(__dirname + '/fixtures/*/index.js', function(name, filepath) {
-        return 'foo-' + name;
+      app.register(__dirname + '/fixtures/*/index.js', {
+        rename: function(file) {
+          return 'foo-' + file.name;
+        }
       });
 
       assert(app.generators.hasOwnProperty('foo-a'));
