@@ -10,7 +10,8 @@
   },
   "license": "MIT",
   "files": [
-    "index.js"
+    "index.js",
+    "utils.js"
   ],
   "main": "index.js",
   "engines": {
@@ -22,14 +23,17 @@
   "dependencies": {
     "debug": "^2.2.0",
     "extend-shallow": "^2.0.1",
-    "is-glob": "^2.0.1",
-    "matched": "^0.4.1"
+    "has-glob": "^0.1.1",
+    "is-valid-app": "^0.1.1",
+    "lazy-cache": "^2.0.1",
+    "matched": "^0.4.1",
+    "vinyl": "^1.1.1"
   },
   "devDependencies": {
-    "base": "^0.8.1",
-    "base-generators": "^0.2.11",
+    "base": "^0.11.0",
+    "base-generators": "^0.4.0",
     "gulp-format-md": "^0.1.9",
-    "mocha": "^2.4.5"
+    "mocha": "^2.5.3"
   },
   "keywords": [
     "base",
@@ -37,16 +41,17 @@
     "generate",
     "generators",
     "glob",
+    "plugin",
     "register"
   ],
   "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
     "plugins": [
       "gulp-format-md"
-    ],
-    "reflinks": [
-      "base-generators",
-      "verb",
-      "matched"
     ],
     "related": {
       "list": [
@@ -55,10 +60,11 @@
         "generate"
       ]
     },
-    "layout": "default",
-    "toc": false,
-    "tasks": [
-      "readme"
+    "reflinks": [
+      "base-generators",
+      "matched",
+      "verb",
+      "verb-readme-generator"
     ],
     "lint": {
       "reflinks": true
